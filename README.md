@@ -11,13 +11,13 @@ git clone https://github.com/mattilaa/nvim-lua-config ~\AppData\Local\nvim
 Note: It should work out of the box on first launch, if all depedencies (such as FZF) are installed to the system. Confirmed to work on MacOS, Linux and Windows 11 (some additional Mason plugins might not install directly).
 
 # Step by step guide: NeoVim Lua config for C/C++ and Rust development
-In this guide we'll make a NeoVim Lua-configuration from scratch for C/C++ and Rust development using [lazy.nvim](https://github.com/folke/lazy.nvim) plugin manager.
+In this guide we'll make a NeoVim Lua-configuration from scratch for C/C++ and Rust development using [lazy.nvim](https://github.com/folke/lazy.nvim) plugin manager. Version of NeoVim used: v0.10.1
 
 ![alt text](https://github.com/mattilaa/nvim-lua-config/blob/main/config.png?raw=true)
 ## First steps
 ### Directory structure
 
-Create a directory structure under ~/.config/nvim
+Create a directory structure under ~/.config/nvim (Windows: ~\AppData\Local\nvim)
 ```bash
 .
 └── lua
@@ -385,9 +385,9 @@ vim.keymap.set("n", "<c-s>",
 vim.keymap.set("n", "<c-a>",
   "<cmd>lua require('fzf-lua').buffers()<cr>", { silent = true })
 ```
-Ctrl-P will activate fuzzy file search and Ctrl-S activates search for text in files.
+Ctrl-P will activate fuzzy file search and Ctrl-S activates search text in files.
 
-Finally, your .config/nvim file strucure should look like this
+Finally, your .config/nvim (Windows: ~\AppData\Local\nvim) file strucure should look like this
 ```bash
 .
 ├── init.lua
