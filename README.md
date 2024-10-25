@@ -188,16 +188,16 @@ local complete = {
 }
 
 complete.config = function()
-	local cmp = require("cmp")
+    local cmp = require("cmp")
 
-    vim.opt.completeopt = { "menu", "menuone", "noselect" }
-
+    -- Helper function for tab completion
     local has_words_before = function()
-        unpack = unpack or table.unpack
+        if vim.api.nvim_buf_get_option(0, "buftype") == "prompt" then return false end
         local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+        return col ~= 0 and vim.api.nvim_buf_get_text(0, line-1, 0, line-1, col, {})[1]:match("^%s*$") == nil
     end
 
+    -- Helper function for vsnip
     local feedkey = function(key, mode)
         vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
     end
@@ -206,6 +206,16 @@ complete.config = function()
         snippet = {
             expand = function(args)
                 require('luasnip').lsp_expand(args.body)
+            end,
+        },
+        formatting = {
+            fields = { "abbr", "kind", "menu" },
+            format = function(entry, vim_item)
+                local item = entry:get_completion_item()
+                if item.detail then
+                    vim_item.abbr = vim_item.abbr .. " : " .. item.detail
+                end
+                return vim_item
             end,
         },
         mapping = {
@@ -217,57 +227,43 @@ complete.config = function()
                 if cmp.visible() then
                     local entry = cmp.get_selected_entry()
                     if entry and (entry.completion_item.kind == 3 or entry.completion_item.kind == 2) then
-                        -- Check if the item is a function (3) or method (2) and add parentheses
-                            cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })
-                            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('()<Left>', true, true, true), 'n', true)
-                        else
-                            cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })
-                        end
+                        cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })
+                        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('()<Left>', true, true, true), 'n', true)
                     else
-                        fallback()
+                        cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })
                     end
-                end, { "i", "s" }),
-            ['<C-n>'] = cmp.mapping(function(fallback)
+                else
+                    fallback()
+                end
+            end, { "i", "s" }),
+            ["<Tab>"] = cmp.mapping(function(fallback)
                 if cmp.visible() then
-                    local entry = cmp.get_selected_entry()
-                    if entry and (entry.completion_item.kind == 3 or entry.completion_item.kind == 2) then
-                        -- Check if the item is a function (3) or method (2) and add parentheses
-                            cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })
-                            vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes('();<Left><Left>', true, true, true), 'n', true)
-                        else
-                            cmp.confirm({ behavior = cmp.ConfirmBehavior.Insert, select = true })
-                        end
-                    else
-                        fallback()
-                    end
-                end, { "i", "s" }),
-                ["<Tab>"] = cmp.mapping(function(fallback)
-                    if cmp.visible() then
-                        cmp.select_next_item()
-                    elseif vim.fn  == 1 then
-                        feedkey("<Plug>(vsnip-expand-or-jump)", "")
-                    elseif has_words_before() then
-                        cmp.complete()
-                    else
-                        fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
-                    end
-                end, { "i", "s" }),
-
-                ["<S-Tab>"] = cmp.mapping(function()
-                    if cmp.visible() then
-                        cmp.select_prev_item()
-                    elseif vim.fn["vsnip#jumpable"](-1) == 1 then
-                        feedkey("<Plug>(vsnip-jump-prev)", "")
-                    end
-                end, { "i", "s" }),
-            },
-            sources = {
-                { name = 'nvim_lsp' },
-                { name = 'buffer' },
-                { name = 'path' },
-                { name = 'cmdline' },
-            }
-        })
+                    cmp.select_next_item()
+                elseif vim.fn["vsnip#available"](1) == 1 then
+                    feedkey("<Plug>(vsnip-expand-or-jump)", "")
+                elseif has_words_before() then
+                    cmp.complete()
+                else
+                    fallback()
+                end
+            end, { "i", "s" }),
+            ["<S-Tab>"] = cmp.mapping(function(fallback)
+                if cmp.visible() then
+                    cmp.select_prev_item()
+                elseif vim.fn["vsnip#jumpable"](-1) == 1 then
+                    feedkey("<Plug>(vsnip-jump-prev)", "")
+                else
+                    fallback()
+                end
+            end, { "i", "s" }),
+        },
+        sources = {
+            { name = 'nvim_lsp' },
+            { name = 'buffer' },
+            { name = 'path' },
+            { name = 'cmdline' },
+        }
+    })
 end
 
 return complete
