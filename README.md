@@ -1,8 +1,14 @@
 # Install
 If you want to use this repository directly in your NeoVim, just clone it
 ```bash
+Mac/Linux:
 git clone https://github.com/mattilaa/nvim-lua-config ~/.config/nvim
+
+Windows:
+git clone https://github.com/mattilaa/nvim-lua-config ~\AppData\Local\nvim
 ```
+
+Note: It should work out of the box on first launch, if all depedencies (such as FZF) are installed into the system. Connfirmed to work on MacOS, Linux and Windows 11 (some additional Mason plugins might not install directly).
 
 # Step by step guide: NeoVim Lua config for C/C++ and Rust development
 In this guide we'll make a NeoVim Lua-configuration from scratch for C/C++ and Rust development using [lazy.nvim](https://github.com/folke/lazy.nvim) plugin manager.
