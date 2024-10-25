@@ -6,6 +6,8 @@ git clone https://github.com/mattilaa/nvim-lua-config ~/.config/nvim
 
 # Step by step guide: NeoVim Lua config for C/C++ and Rust development
 In this guide we'll make a NeoVim Lua-configuration from scratch for C/C++ and Rust development using [lazy.nvim](https://github.com/folke/lazy.nvim) plugin manager.
+
+![alt text](https://github.com/mattilaa/nvim-lua-config/blob/main/config.png?raw=true)
 ## First steps
 ### Directory structure
 
