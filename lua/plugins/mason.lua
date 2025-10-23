@@ -16,20 +16,5 @@ return {
             })
         end,
     },
-
-    -- Use `nvim-lspconfig` to configure LSP servers
-    {
-        "neovim/nvim-lspconfig",
-        dependencies = { "williamboman/mason-lspconfig.nvim" },
-        config = function()
-            local lspconfig = require("lspconfig")
-
-            -- Setup Clangd (C/C++)
-            lspconfig.clangd.setup({})
-
-            -- Setup Rust Analyzer (Rust)
-            lspconfig.rust_analyzer.setup({})
-        end,
-    },
 }
 

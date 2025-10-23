@@ -29,3 +29,14 @@ vim.keymap.set('n', '<leader>bd', ':bd<cr>', opts)
 -- Escape from everything
 vim.keymap.set('n', '<esc><esc>', ':noh<cr>')
 
+-- Rust-specific formatting
+vim.api.nvim_create_autocmd("FileType", {
+    pattern = "rust",
+    callback = function()
+        local opts = { buffer = true, noremap = true, silent = true }
+        -- LSP formatting
+        vim.keymap.set("n", "<leader>f", function()
+            vim.lsp.buf.format({ async = false })
+        end, vim.tbl_extend("force", opts, { desc = "LSP format file" }))
+    end,
+})
